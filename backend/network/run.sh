@@ -13,6 +13,8 @@ echo "Network up with CA & Couchdb"
 echo "##########################################"
 echo ""
 
+pwd
+
 ./network.sh up -ca -s couchdb
 
 echo ""

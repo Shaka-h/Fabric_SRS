@@ -17,10 +17,14 @@
 # this script is run from is critical. To ease this, get the directory
 # this script is actually in and infer location from there. (putting first)
 
-ROOTDIR=$(cd "$(dirname "$0")" && pwd)
-export PATH=${ROOTDIR}/../bin:${PWD}/../bin:$PATH
-export FABRIC_CFG_PATH=${PWD}/configtx
+# ROOTDIR=$(cd "$(dirname "$0")" && pwd)
+# export PATH=${ROOTDIR}/../bin:${PWD}/../bin:$PATH
+# export FABRIC_CFG_PATH=${PWD}/configtx
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
 export VERBOSE=false
+export PATH=${PWD}/bin:$PATH
+export FABRIC_CFG_PATH=${PWD}/config
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 # push to the required directory & set a trap to go back if needed
 pushd ${ROOTDIR} > /dev/null
@@ -57,6 +61,7 @@ NONWORKING_VERSIONS="^1\.0\. ^1\.1\. ^1\.2\. ^1\.3\. ^1\.4\."
 function checkPrereqs() {
   ## Check if your have cloned the peer binaries and configuration files.
   peer version > /dev/null 2>&1
+  echo "  FABRIC_CFG_PATH=$FABRIC_CFG_PATH"
 
   if [[ $? -ne 0 || ! -d "../config" ]]; then
     errorln "Peer binary and configuration files not found.."
