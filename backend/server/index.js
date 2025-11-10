@@ -175,14 +175,14 @@ app.post('/addCourse', async (req, res) => {
         res.json(JSON.parse(response.toString()));
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to add course' });
+        res.status(500).json({ error: 'Failed to add course', err });
     }
 });
 
 // 👉 List all courses
 app.get('/listCourses', async (req, res) => {
     try {
-        const contract = await getContract('student1', chaincodeName);
+        const contract = await getContract('lecturer1', chaincodeName);
         const response = await contract.evaluateTransaction('listCourses');
         res.json(JSON.parse(response.toString()));
     } catch (err) {
@@ -212,6 +212,29 @@ app.post('/submitGrade', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to submit grade' });
+    }
+});
+
+// 👉 Get a specific result
+app.get('/getResult/:resultId', async (req, res) => {
+    try {
+        const contract = await getContract('lecturer1', chaincodeName);
+        const response = await contract.evaluateTransaction('getResult', req.params.resultId);
+        res.json(JSON.parse(response.toString()));
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch result' });
+    }
+});
+
+app.get('/listResults', async (req, res) => {
+    try {
+        const contract = await getContract('lecturer1', chaincodeName);
+        const response = await contract.evaluateTransaction('listCourses');
+        res.json(JSON.parse(response.toString()));
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to list courses' });
     }
 });
 

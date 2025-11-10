@@ -16,13 +16,33 @@ class Enrollment {
     return { message: 'enrollment created successfully', enrollmentId: data.enrollmentId };
   }
 
+  // static async list(ctx) {
+  //   const iterator = await ctx.stub.getStateByRange('', '');
+  //   const results = [];
+  //   for await (const res of iterator) {
+  //     const record = JSON.parse(res.value.toString());
+  //     if (record.type === 'enrollment') results.push(record);
+  //   }
+  //   return results;
+  // }
+
   static async list(ctx) {
     const iterator = await ctx.stub.getStateByRange('', '');
     const results = [];
-    for await (const res of iterator) {
-      const record = JSON.parse(res.value.toString());
-      if (record.type === 'enrollment') results.push(record);
+
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = result.value.value.toString('utf8');
+      try {
+        const record = JSON.parse(strValue);
+        if (record.type === 'enrollment') results.push(record);
+      } catch (err) {
+        console.error('Error parsing record:', err);
+      }
+      result = await iterator.next();
     }
+
+    await iterator.close();
     return results;
   }
 }

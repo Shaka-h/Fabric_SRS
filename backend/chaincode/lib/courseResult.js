@@ -3,11 +3,11 @@ const crypto = require('../Utils/crypto');
 
 class CourseResult {
   static async submit(ctx, data) {
-    const key = `result_${data.enrollmentId}`;
-    const existing = await ctx.stub.getState(key);
+    const existing = await ctx.stub.getState(data.resultId);
     if (existing && existing.length > 0) {
-      throw new Error(`Grade already exists for enrollment ${data.enrollmentId}`);
+      throw new Error(`Grade already exists for enrollment ${data.enrollmentId} ${existing}`);
     }
+    data.type = 'result';
 
     // Compute hash
     const hash = crypto.hash(JSON.stringify(data));
@@ -15,23 +15,39 @@ class CourseResult {
       ...data,
       status: 'PENDING',
       hash,
-      createdAt: new Date().toISOString()
     };
 
-    await ctx.stub.putState(key, Buffer.from(JSON.stringify(result)));
+    await ctx.stub.putState(String(data.resultId), Buffer.from(JSON.stringify(result)));
 
-    // Add audit trail
-    const auditKey = `audit_${key}_${Date.now()}`;
-    const audit = {
-      transactionType: 'CREATE',
-      transactionId: ctx.stub.getTxID(),
-      timestamp: new Date().toISOString(),
-      performer: ctx.clientIdentity.getID(),
-      hash
-    };
-    await ctx.stub.putState(auditKey, Buffer.from(JSON.stringify(audit)));
+    return { message: 'Grade submitted successfully', resultId: data.resultId };
+  }
 
-    return { message: 'Grade submitted successfully', resultId: key };
+  static async get(ctx, resultId) {
+    const resultBytes = await ctx.stub.getState(String(resultId));
+    if (!resultBytes || resultBytes.length === 0) {
+      throw new Error(`result ${resultId} not found ${resultBytes}`);
+    }
+    return JSON.parse(resultBytes.toString());
+  }
+
+  static async list(ctx) {
+    const iterator = await ctx.stub.getStateByRange('', '');
+    const results = [];
+
+    let result = await iterator.next();
+    while (!result.done) {
+      const strValue = result.value.value.toString('utf8');
+      try {
+        const record = JSON.parse(strValue);
+        if (record.type === 'result') results.push(record);
+      } catch (err) {
+        console.error('Error parsing record:', err);
+      }
+      result = await iterator.next();
+    }
+
+    await iterator.close();
+    return results;
   }
 
   static async verify(ctx, resultId) {

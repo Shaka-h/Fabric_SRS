@@ -7,9 +7,9 @@ class Course {
       throw new Error(`Course ${data.courseId} already exists`);
     }
 
-    data.type = 'Course';
-    data.createdDate = new Date().toISOString();
-    data.updatedDate = data.createdDate;
+    data.type = 'course';
+    // data.createdDate = new Date().toISOString();
+    // data.updatedDate = data.createdDate;
     data.isActive = true;
 
     await ctx.stub.putState(data.courseId, Buffer.from(JSON.stringify(data)));
@@ -25,7 +25,7 @@ class Course {
       const strValue = result.value.value.toString('utf8');
       try {
         const record = JSON.parse(strValue);
-        if (record.type === 'Course') results.push(record);
+        if (record.type === 'course') results.push(record);
       } catch (err) {
         console.error('Error parsing record:', err);
       }

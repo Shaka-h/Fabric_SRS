@@ -1,5 +1,7 @@
 clear
 
+export PATH=$PATH:/Users/macbookprom1pro/Projects/SRS-Fabric/backend/fabric-samples/bin
+
 echo "##########################################"
 echo "Network down"
 echo "##########################################"
