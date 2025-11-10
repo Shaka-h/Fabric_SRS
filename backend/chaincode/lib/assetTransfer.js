@@ -214,7 +214,7 @@ class SRSContract extends Contract {
         "updatedDate": "2025-10-22",
         "isActive": true,
         "createdBy": null,
-        "enrollmentId": 13,
+        "id.toString()": 13,
         "studentName": "surejyquq",
         "studentNumber": "103",
         "courseCode": "mt101",
@@ -244,7 +244,7 @@ class SRSContract extends Contract {
         "updatedDate": "2025-10-22",
         "isActive": true,
         "createdBy": null,
-        "enrollmentId": 10,
+        "id.toString()": 10,
         "studentName": "xonuz",
         "studentNumber": "102",
         "courseCode": "mt101",
@@ -274,7 +274,7 @@ class SRSContract extends Contract {
         "updatedDate": "2025-10-16",
         "isActive": true,
         "createdBy": null,
-        "enrollmentId": 5,
+        "id.toString()": 5,
         "studentName": "hannah",
         "studentNumber": "101",
         "courseCode": "2",
@@ -304,7 +304,7 @@ class SRSContract extends Contract {
         "updatedDate": "2025-10-15",
         "isActive": true,
         "createdBy": null,
-        "enrollmentId": 3,
+        "id.toString()": 3,
         "studentName": "hannah",
         "studentNumber": "101",
         "courseCode": "",
@@ -331,14 +331,6 @@ class SRSContract extends Contract {
     ];
     const transcripts = [];
 
-
-    await ctx.stub.putState('Students', Buffer.from(stringify(students)));
-    await ctx.stub.putState('Lecturers', Buffer.from(stringify(lecturers)));
-    await ctx.stub.putState('Courses', Buffer.from(stringify(courses)));
-    await ctx.stub.putState('Enrollments', Buffer.from(stringify(enrollments)));
-    await ctx.stub.putState('Grades', Buffer.from(stringify(grades)));
-    await ctx.stub.putState('Transcripts', Buffer.from(stringify(transcripts)));
-    
     for (const student of students) {
       await ctx.stub.putState(student.studentId, Buffer.from(JSON.stringify(student)));
     }
@@ -346,10 +338,10 @@ class SRSContract extends Contract {
       await ctx.stub.putState(lecturer.lecturerId, Buffer.from(JSON.stringify(lecturer)));
     }
     for (const course of courses) {
-      await ctx.stub.putState(course.courseId, Buffer.from(JSON.stringify(course)));
+      await ctx.stub.putState(course.id.toString(), Buffer.from(JSON.stringify(course)));
     }
     for (const enrollment of enrollments) {
-      await ctx.stub.putState(enrollment.enrollmentId, Buffer.from(JSON.stringify(enrollment)));
+      await ctx.stub.putState(enrollment.id.toString(), Buffer.from(JSON.stringify(enrollment)));
     }
     for (const grade of grades) {
       await ctx.stub.putState(grade.id.toString(), Buffer.from(JSON.stringify(grade)));

@@ -2,6 +2,9 @@ clear
 
 export PATH=$PATH:/Users/macbookprom1pro/Projects/SRS-Fabric/backend/fabric-samples/bin
 
+# export DOCKER_DEFAULT_PLATFORM=linux/amd64 --> can find fabric images for arm64
+# docker run --rm hyperledger/fabric-nodeenv:2.4 node -v --> ailed to pull hyperledger/fabric-nodeenv:2.4: no matching manifest for linux/arm64/v8 in the manifest list entries
+
 echo "##########################################"
 echo "Network down"
 echo "##########################################"
